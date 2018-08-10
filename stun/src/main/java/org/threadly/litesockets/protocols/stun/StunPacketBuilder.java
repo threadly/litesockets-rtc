@@ -1,4 +1,4 @@
-package org.threadly.litesockets.protocols.sdp;
+package org.threadly.litesockets.protocols.stun;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;

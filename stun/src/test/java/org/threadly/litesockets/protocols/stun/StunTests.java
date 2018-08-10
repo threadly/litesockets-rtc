@@ -1,4 +1,4 @@
-package org.threadly.litesockets.protocols.sdp;
+package org.threadly.litesockets.protocols.stun;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -14,12 +14,12 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Test;
-import org.threadly.litesockets.protocols.sdp.StunAttribute;
-import org.threadly.litesockets.protocols.sdp.StunMessageType;
-import org.threadly.litesockets.protocols.sdp.StunPacket;
-import org.threadly.litesockets.protocols.sdp.StunPacketBuilder;
-import org.threadly.litesockets.protocols.sdp.StunUtils;
-import org.threadly.litesockets.protocols.sdp.TransactionID;
+import org.threadly.litesockets.protocols.stun.StunAttribute;
+import org.threadly.litesockets.protocols.stun.StunMessageType;
+import org.threadly.litesockets.protocols.stun.StunPacket;
+import org.threadly.litesockets.protocols.stun.StunPacketBuilder;
+import org.threadly.litesockets.protocols.stun.StunUtils;
+import org.threadly.litesockets.protocols.stun.TransactionID;
 
 public class StunTests {
   

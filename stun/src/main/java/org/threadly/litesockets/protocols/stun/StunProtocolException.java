@@ -1,4 +1,4 @@
-package org.threadly.litesockets.protocols.sdp;
+package org.threadly.litesockets.protocols.stun;
 
 public class StunProtocolException extends Exception {
 

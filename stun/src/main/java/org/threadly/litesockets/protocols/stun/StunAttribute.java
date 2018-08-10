@@ -1,4 +1,4 @@
-package org.threadly.litesockets.protocols.sdp;
+package org.threadly.litesockets.protocols.stun;
 
 public enum StunAttribute {
   MAPPED_ADDRESS(0x0001),
