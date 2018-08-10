@@ -102,7 +102,7 @@ subprojects {
               id 'jent'
               name 'Mike Jensen'
               email 'jent@threadly.org'
-            },
+            }
             developer {
               id 'lwahlmeier'
               name 'Luke Wahlmeier'
@@ -193,7 +193,6 @@ subprojects {
     archives sourcesJar
   }
 }
-
 
 project(':sdp') {
   archivesBaseName = 'litesockets-sdp'
