@@ -214,3 +214,13 @@ project(':stun') {
   }
 }
 
+project(':rtp') {
+  archivesBaseName = 'litesockets-rtp'
+
+  dependencies {
+    testCompile (
+      "junit:junit:$junitVersion",
+    )
+  }
+}
+  
