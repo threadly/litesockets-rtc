@@ -194,6 +194,17 @@ subprojects {
   }
 }
 
+project(':sip') {
+  archivesBaseName = 'litesockets-sip'
+
+  dependencies {
+    testCompile (
+      "junit:junit:$junitVersion",
+    )
+  }
+}
+
+
 project(':sdp') {
   archivesBaseName = 'litesockets-sdp'
 
