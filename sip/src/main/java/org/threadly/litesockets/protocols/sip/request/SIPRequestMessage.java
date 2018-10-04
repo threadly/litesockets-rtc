@@ -4,17 +4,25 @@ import java.util.List;
 
 import org.threadly.litesockets.protocols.sip.common.SIPConstants;
 import org.threadly.litesockets.protocols.sip.common.SIPHeaders;
+import org.threadly.litesockets.protocols.sip.common.SIPPayload;
+import org.threadly.litesockets.protocols.sip.common.SIPProtocolException;
 import org.threadly.litesockets.protocols.sip.common.SIPUtils;
 
-public class SipRequestMessage {
+public class SIPRequestMessage {
 
   private final SIPRequestHeader srh;
   private final SIPHeaders sh;
+  private final SIPPayload payload;
   private volatile String fullRequest;
+
+  public SIPRequestMessage(SIPRequestHeader srh, SIPHeaders sh) {
+    this(srh, sh, SIPPayload.EMPTY_PAYLOAD);
+  }
   
-  public SipRequestMessage(SIPRequestHeader srh, SIPHeaders sh) {
+  public SIPRequestMessage(SIPRequestHeader srh, SIPHeaders sh, SIPPayload spl) {
     this.srh = srh;
     this.sh = sh;
+    this.payload = spl;
   }
 
   public SIPRequest getRequest() {
@@ -41,6 +49,14 @@ public class SipRequestMessage {
     return sh.getTo();
   }
   
+  public int getContentLength() {
+    String x = sh.getHeaderValue(SIPConstants.SIP_HEADER_KEY_CONTENT_LENGTH);
+    if(x == null) {
+      return 0;
+    } 
+    return Integer.parseInt(x);
+  }
+  
   public String getHeaderValue(String key) {
     return sh.getHeaderValue(key);
   }
@@ -55,6 +71,12 @@ public class SipRequestMessage {
 
   public SIPHeaders getHeaders() {
     return sh;
+  }
+  
+  public static SIPRequestMessage fromString(String sip) throws SIPProtocolException {
+    SIPRequestHeader srh = SIPRequestHeader.fromString(sip);
+    SIPHeaders sh = SIPHeaders.fromString(sip);
+    return new SIPRequestMessage(srh, sh);
   }
   
   @Override

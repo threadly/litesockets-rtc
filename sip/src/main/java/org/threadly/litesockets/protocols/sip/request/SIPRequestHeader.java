@@ -18,11 +18,7 @@ public class SIPRequestHeader {
     this.sr = sr;
     this.sip_uri = uri.trim();
     this.sip_version = sip_version.trim();
-    if(SIPUtils.saveMemory()) {
-      this.fullRequest = (sr+" "+uri+" "+sip_version).intern();
-    } else {
-      this.fullRequest = sr+" "+uri+" "+sip_version;
-    }
+    this.fullRequest = (sr+" "+uri+" "+sip_version);
   }
   
   public SIPRequest getSIPRequest() {

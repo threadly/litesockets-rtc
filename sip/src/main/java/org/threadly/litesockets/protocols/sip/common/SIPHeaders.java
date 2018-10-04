@@ -18,11 +18,7 @@ public class SIPHeaders {
   private SIPHeaders(final String rawHeaders, List<String> keys, List<String> values) {
     this.keys = Collections.unmodifiableList(new ArrayList<>(keys));
     this.values = Collections.unmodifiableList(new ArrayList<>(values));
-    if(SIPUtils.saveMemory()) {
-      this.rawHeaders = rawHeaders.intern();
-    } else {
-      this.rawHeaders = rawHeaders;
-    }
+    this.rawHeaders = rawHeaders;
   }
 
   /**
@@ -127,47 +123,63 @@ public class SIPHeaders {
     String to = null;
     String from = null;
     String cseq = null;
-
+    
+    String lastKey = null;
+    
     for(String h: rows) {
       if (h.isEmpty()) {
         continue;
       }
       int delim = h.indexOf(SIPConstants.SIP_KEY_VALUE_DELIMINATOR);
-      if (delim < 0) {
-        throw new SIPProtocolException("Header is missing key value delim: " + h);
+      String key = null;
+      String value = null;
+      
+      if(lastKey != null && (h.startsWith(" ") || h.startsWith("\t"))) {
+        int pos = values.size()-1;
+        String nv = values.get(pos)+"\r\n"+h;
+        values.set(pos, nv);
+        continue;
       }
-      String key = h.substring(0, delim).trim();
-      String value = h.substring(delim+1).trim();
+      
+      if (delim < 0) {
+        key = lastKey;
+        value = h;
+      } else {
+        key = h.substring(0, delim).trim();
+        value = h.substring(delim+1).trim();
+      }
+      
       switch(key) {
       case SIPConstants.SIP_HEADER_KEY_TO:
         if(to == null) {
           to = value;
         } else {
           throw new SIPProtocolException("Header has multipule To values!: "+to+":"+value );
-        }
+        } break;
       case SIPConstants.SIP_HEADER_KEY_FROM:
         if(from == null) {
           from = value;
         } else {
           throw new SIPProtocolException("Header has multipule From values!: "+from+":"+value );
-        }
+        } break;
       case SIPConstants.SIP_HEADER_KEY_CALL_ID:
         if(cid == null) {
           cid = value;
         } else {
           throw new SIPProtocolException("Header has multipule Call-ID values!: "+cid+":"+value );
-        }
+        }break; 
       case SIPConstants.SIP_HEADER_KEY_CALL_SEQUENCE:
         if(cseq == null) {
           cseq = value;
         } else {
           throw new SIPProtocolException("Header has multipule CSeq values!: "+cseq+":"+value );
-        }
+        }break;
       default:
 
       }
       keys.add(key);
       values.add(value);
+      lastKey = key;
     }
 
     return new SIPHeaders(rawHeaders, keys, values);
