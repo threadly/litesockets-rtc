@@ -89,19 +89,20 @@ public class StunPacket {
     return builder;
   }
 
-  public StunMessageType getMessageType() {
-    switch(buf.getShort(0)) {
-    case 0x0001:
-      return StunMessageType.REQUEST;
-    case 0x0101:
-      return StunMessageType.SUCCESS;
-    case 0x0111:
-      return StunMessageType.FAILURE;
-    case 0x0011:
-      return StunMessageType.INDICATION;
-    default:
+  public StunMessageClass getMessageClass() {
+    StunMessageClass smc = StunMessageClass.getClass(buf.getShort(0));
+    if(smc == null) {
       throw new IllegalStateException("stun parse error");
     }
+    return smc;
+  }
+  
+  public StunMessageMethod getMessageMethod() {
+    StunMessageMethod smm = StunMessageMethod.getMethod(buf.getShort(0));
+    if(smm == null) {
+      throw new IllegalStateException("stun parse error");
+    }
+    return smm;
   }
 
   public TransactionID getTxID() {

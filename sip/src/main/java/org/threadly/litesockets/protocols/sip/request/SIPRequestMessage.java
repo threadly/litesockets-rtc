@@ -6,7 +6,6 @@ import org.threadly.litesockets.protocols.sip.common.SIPConstants;
 import org.threadly.litesockets.protocols.sip.common.SIPHeaders;
 import org.threadly.litesockets.protocols.sip.common.SIPPayload;
 import org.threadly.litesockets.protocols.sip.common.SIPProtocolException;
-import org.threadly.litesockets.protocols.sip.common.SIPUtils;
 
 public class SIPRequestMessage {
 
@@ -36,25 +35,53 @@ public class SIPRequestMessage {
   public String getCallId() {
     return sh.getCallId();
   }
-  
-  public String getCSeq() {
-    return sh.getCSeq();
+    
+  public String getFullCSeq() {
+    return sh.getFullCSeq();
   }
   
-  public String getFrom() {
-    return sh.getFrom();
+  public long getCSeqNumber() {
+    return sh.getCSeqNumber();
   }
   
-  public String getTo() {
-    return sh.getTo();
+  public String getFullFrom() {
+    return sh.getFullFrom();
   }
   
-  public int getContentLength() {
-    String x = sh.getHeaderValue(SIPConstants.SIP_HEADER_KEY_CONTENT_LENGTH);
-    if(x == null) {
-      return 0;
-    } 
-    return Integer.parseInt(x);
+  public String getFromURI() {
+    return sh.getFromURI();
+  }
+  
+  public String getFromUser() {
+    return sh.getFromUser();
+  }
+  
+  public String getFromHost() {
+    return sh.getFromHost();
+  }
+  
+  public String getFullTo() {
+    return sh.getFullTo();
+  }
+  
+  public String getToURI() {
+    return sh.getToURI();
+  }
+  
+  public String getToUser() {
+    return sh.getToUser();
+  }
+  
+  public String getToHost() {
+    return sh.getToHost();
+  }
+  
+  public SIPPayload getPayload() {
+    return payload;
+  }
+  
+  public long getContentLength() {
+    return sh.getContentLength();
   }
   
   public String getHeaderValue(String key) {
@@ -82,12 +109,8 @@ public class SIPRequestMessage {
   @Override
   public String toString() {
     if(fullRequest == null) {
-      String tmp = srh.toString()+SIPConstants.SIP_NEWLINE+sh.toString()+SIPConstants.SIP_NEWLINE;
-      if(SIPUtils.saveMemory()) {
-        fullRequest = tmp.intern();
-      } else {
-        fullRequest = tmp;
-      }
+      String tmp = srh.toString()+SIPConstants.SIP_NEWLINE+sh.toString()+SIPConstants.SIP_NEWLINE+payload.getAsString();
+      fullRequest = tmp;
     }
     return fullRequest;
   }

@@ -144,15 +144,17 @@ public class StunUtils {
     if(buf.remaining() < 8) {
       return false;
     }
-    switch(buf.getShort(buf.position() + 0)) {
-    case 0x0001:
-    case 0x0101:
-    case 0x0111:
-    case 0x0011:
-      return true;
-    default:
+    int smt = buf.getShort(buf.position() + 0);
+    if(smt >> 14 != 0) {
       return false;
     }
+    if(StunMessageClass.getClass(smt) == null) {
+      return false;
+    }
+    if(StunMessageMethod.getMethod(smt) == null) {
+      return false;
+    }
+    return true;
   }
 
   public static int getInt(int pos, byte[] ba) {

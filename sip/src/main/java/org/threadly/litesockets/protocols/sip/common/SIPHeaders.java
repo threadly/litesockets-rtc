@@ -65,20 +65,83 @@ public class SIPHeaders {
     return getHeaderValue(SIPConstants.SIP_HEADER_KEY_CALL_ID);
   }
 
-  public String getTo() {
-    return getHeaderValue(SIPConstants.SIP_HEADER_KEY_TO);
-  }
 
-  public String getFrom() {
+  public String getFullFrom() {
     return getHeaderValue(SIPConstants.SIP_HEADER_KEY_FROM);
   }
+  
+  public String getFromURI() {
+    return getToFromURI(getFullFrom());
+  }
+  
+  public String getFromUser() {
+    return getToFromUser(getFullFrom());
+  }
+  
+  public String getFromHost() {
+    return getToFromHost(getFullFrom());
+  }
+  
+  public String getFullTo() {
+    return getHeaderValue(SIPConstants.SIP_HEADER_KEY_TO);
+  }
+  
+  public String getToURI() {
+    return getToFromURI(getFullTo());
+  }
+  
+  public String getToUser() {
+    return getToFromUser(getFullTo());
+  }
+  
+  public String getToHost() {
+    return getToFromHost(getFullTo());
+  }
+  
+  private static String getToFromUser(final String full) {
+    return getToFromURI(full).split("@",2)[0].trim();
+  }
+  
+  private static String getToFromHost(final String full) {
+    return getToFromURI(full).split("@",2)[1].trim();
+  }
+  
+  private static String getToFromURI(final String full) {
+    String uri = full.split(";",2)[0].trim();
+    int startpos = uri.indexOf("<sip:");
+    if(startpos > -1) {
+      uri = uri.substring(startpos+5);
+    }
+    if(uri.endsWith(">")) {
+      uri = uri.substring(0, uri.length()-1);
+    }
+    return uri;
+  }
 
-  public String getCSeq() {
+  public String getFullCSeq() {
     return getHeaderValue(SIPConstants.SIP_HEADER_KEY_CALL_SEQUENCE);
+  }
+  
+  
+  public long getCSeqNumber() {
+    String x = getFullCSeq().split(" ",2)[0].trim();
+    try {
+      return Long.parseLong(x);
+    } catch(Exception e) {
+      return -1;
+    }
   }
 
   public List<String> getVia() {
     return getHeaderValueList(SIPConstants.SIP_HEADER_KEY_VIA);
+  }
+  
+  public long getContentLength() {
+    String x = getHeaderValue(SIPConstants.SIP_HEADER_KEY_CONTENT_LENGTH);
+    if(x == null) {
+      return 0;
+    } 
+    return Long.parseLong(x);
   }
 
   @Override

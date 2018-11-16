@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StunPacketBuilder {
-  private StunMessageType type;
+  private StunMessageClass smc;
+  private StunMessageMethod smm;
   private TransactionID tid;
   private List<StunAttribute> attribs = new ArrayList<>();
   private List<ByteBuffer> attribBuffers = new ArrayList<>();
@@ -15,12 +16,13 @@ public class StunPacketBuilder {
   private byte[] key = null;
 
   public StunPacketBuilder() {
-    this.type = StunMessageType.REQUEST;
+    this.smc = StunMessageClass.REQUEST;
+    this.smm = StunMessageMethod.BINDING;
     this.tid = StunUtils.generateTxID();
   }
 
-  public StunPacketBuilder setType(final StunMessageType t) {
-    this.type = t;
+  public StunPacketBuilder setType(final StunMessageClass t) {
+    this.smc = t;
     return this;
   }
 
@@ -43,7 +45,8 @@ public class StunPacketBuilder {
 
   private ByteBuffer makeHeader(int len) {
     ByteBuffer header = ByteBuffer.allocate(20);
-    header.putShort((short)type.bits);
+    short smcm = (short)(smc.bits | smm.bits);
+    header.putShort(smcm);
     header.putShort((short)len); // length, to be filled in later
     header.putInt(StunUtils.STUN_MAGIC);
     header.put(tid.getByteBuffer());

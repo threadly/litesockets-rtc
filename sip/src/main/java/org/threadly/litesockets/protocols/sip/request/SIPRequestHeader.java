@@ -1,7 +1,6 @@
 package org.threadly.litesockets.protocols.sip.request;
 
 import org.threadly.litesockets.protocols.sip.common.SIPConstants;
-import org.threadly.litesockets.protocols.sip.common.SIPUtils;
 
 /**
  * Immutable reference to a SipRequestHeader (first line of a Sip Request Message).

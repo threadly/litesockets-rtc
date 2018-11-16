@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Test;
 import org.threadly.litesockets.protocols.stun.StunAttribute;
-import org.threadly.litesockets.protocols.stun.StunMessageType;
+import org.threadly.litesockets.protocols.stun.StunMessageClass;
 import org.threadly.litesockets.protocols.stun.StunPacket;
 import org.threadly.litesockets.protocols.stun.StunPacketBuilder;
 import org.threadly.litesockets.protocols.stun.StunUtils;
@@ -139,7 +139,7 @@ public class StunTests {
   @Test
   public void testSampleREQ1() throws Exception {
     StunPacket sp = new StunPacket(SAMPLE_STUN_REQ1);
-    assertEquals(StunMessageType.REQUEST, sp.getMessageType());
+    assertEquals(StunMessageClass.REQUEST, sp.getMessageClass());
     List<StunAttribute> sal = sp.getAttributes();
     assertEquals(StunAttribute.SOFTWARE, sal.get(0));
     assertEquals(StunAttribute.PRIORITY, sal.get(1));
@@ -158,7 +158,7 @@ public class StunTests {
 
     StunPacketBuilder spb = new StunPacketBuilder();
     spb.setPaddingByte((byte)0x20);
-    spb.setType(StunMessageType.REQUEST);
+    spb.setType(StunMessageClass.REQUEST);
     spb.setTxID(sp.getTxID());
     spb.setAttribute(StunAttribute.SOFTWARE, ByteBuffer.wrap(swn.getBytes()));
     spb.setAttribute(StunAttribute.PRIORITY, sp.getPriority());
@@ -186,7 +186,7 @@ public class StunTests {
   @Test
   public void testSampleRESP1() throws Exception {
     StunPacket sp = new StunPacket(SAMPLE_STUN_RESP1);
-    assertEquals(StunMessageType.SUCCESS, sp.getMessageType());
+    assertEquals(StunMessageClass.SUCCESS, sp.getMessageClass());
     List<StunAttribute> sal = sp.getAttributes();
     assertEquals(StunAttribute.SOFTWARE, sal.get(0));
     assertEquals(StunAttribute.XOR_MAPPED_ADDRESS, sal.get(1));
@@ -200,7 +200,7 @@ public class StunTests {
 
 
     StunPacketBuilder spb = new StunPacketBuilder();
-    spb.setType(StunMessageType.SUCCESS);
+    spb.setType(StunMessageClass.SUCCESS);
     spb.setPaddingByte((byte)0x20);
     spb.setTxID(sp.getTxID());
     spb.setAttribute(StunAttribute.SOFTWARE, ByteBuffer.wrap(swn.getBytes()));
@@ -221,7 +221,7 @@ public class StunTests {
   @Test
   public void testSampleRESP2() throws Exception {
     StunPacket sp = new StunPacket(SAMPLE_STUN_RESP2);
-    assertEquals(StunMessageType.SUCCESS, sp.getMessageType());
+    assertEquals(StunMessageClass.SUCCESS, sp.getMessageClass());
     List<StunAttribute> sal = sp.getAttributes();
     assertEquals(StunAttribute.SOFTWARE, sal.get(0));
     assertEquals(StunAttribute.XOR_MAPPED_ADDRESS, sal.get(1));
@@ -236,7 +236,7 @@ public class StunTests {
 
 
     StunPacketBuilder spb = new StunPacketBuilder();
-    spb.setType(StunMessageType.SUCCESS);
+    spb.setType(StunMessageClass.SUCCESS);
     spb.setPaddingByte((byte)0x20);
     spb.setTxID(sp.getTxID());
     spb.setAttribute(StunAttribute.SOFTWARE, ByteBuffer.wrap(swn.getBytes()));
@@ -257,11 +257,11 @@ public class StunTests {
   @Test
   public void stunProtocolType() throws Exception {
     StunPacketBuilder sbb = new StunPacketBuilder();
-    for(StunMessageType t: StunMessageType.values()) {
+    for(StunMessageClass t: StunMessageClass.values()) {
       sbb.setType(t);
       StunPacket sp = sbb.build();
       StunPacket sp2 = new StunPacket(sp.getBytes());
-      assertEquals(sp.getMessageType(), sp2.getMessageType());
+      assertEquals(sp.getMessageClass(), sp2.getMessageClass());
       assertEquals(sp.getTxID(), sp2.getTxID());
       assertTrue(StunUtils.isStunPacket(sp.getBytes()));
       assertTrue(StunUtils.isStunPacket(sp2.getBytes()));
@@ -271,7 +271,7 @@ public class StunTests {
   @Test
   public void stunMappedAddress() throws Exception {
     StunPacketBuilder sbb = new StunPacketBuilder();
-    sbb.setType(StunMessageType.REQUEST);
+    sbb.setType(StunMessageClass.REQUEST);
     for(int a=0; a<255; a++) {
       InetSocketAddress isa = new InetSocketAddress(InetAddress.getByAddress(new byte[] {
           (byte)a, 
@@ -282,7 +282,7 @@ public class StunTests {
       sbb.setMappedAddress(isa.getAddress().getAddress(), isa.getPort());
       StunPacket sp = sbb.build();
       StunPacket sp2 = new StunPacket(sp.getBytes());
-      assertEquals(sp.getMessageType(), sp2.getMessageType());
+      assertEquals(sp.getMessageClass(), sp2.getMessageClass());
       assertEquals(sp.getTxID(), sp2.getTxID());
       assertEquals(sp.getAddress(), sp2.getAddress());
       assertTrue(StunUtils.isStunPacket(sp.getBytes()));
@@ -292,7 +292,7 @@ public class StunTests {
   @Test
   public void stunUserName() throws Exception {
     StunPacketBuilder sbb = new StunPacketBuilder();
-    sbb.setType(StunMessageType.REQUEST);
+    sbb.setType(StunMessageClass.REQUEST);
     for(int a=0; a<255; a++) {
       InetSocketAddress isa = new InetSocketAddress(InetAddress.getByAddress(new byte[] {
           (byte)a, 
@@ -304,7 +304,7 @@ public class StunTests {
       sbb.setUsername(ByteBuffer.wrap(UUID.randomUUID().toString().getBytes()));
       StunPacket sp = sbb.build();
       StunPacket sp2 = new StunPacket(sp.getBytes());
-      assertEquals(sp.getMessageType(), sp2.getMessageType());
+      assertEquals(sp.getMessageClass(), sp2.getMessageClass());
       assertEquals(sp.getTxID(), sp2.getTxID());
       assertEquals(sp.getUsername(), sp2.getUsername());
       assertTrue(StunUtils.isStunPacket(sp.getBytes()));
@@ -315,7 +315,7 @@ public class StunTests {
   @Test
   public void stunXORAddress() throws Exception {
     StunPacketBuilder sbb = new StunPacketBuilder();
-    sbb.setType(StunMessageType.REQUEST);
+    sbb.setType(StunMessageClass.REQUEST);
     for(int a=0; a<255; a++) {
       InetSocketAddress isa = new InetSocketAddress(InetAddress.getByAddress(new byte[] {
           (byte)a, 
@@ -326,7 +326,7 @@ public class StunTests {
       sbb.setXorMappedAddress(isa.getAddress().getAddress(), isa.getPort());
       StunPacket sp = sbb.build();
       StunPacket sp2 = new StunPacket(sp.getBytes());
-      assertEquals(sp.getMessageType(), sp2.getMessageType());
+      assertEquals(sp.getMessageClass(), sp2.getMessageClass());
       assertEquals(sp.getTxID(), sp2.getTxID());
       assertEquals(sp.getAddress(), sp2.getAddress());
       assertTrue(StunUtils.isStunPacket(sp.getBytes()));
@@ -337,7 +337,7 @@ public class StunTests {
   @Test
   public void stunXORipv6Address() throws Exception {
     StunPacketBuilder sbb = new StunPacketBuilder();
-    sbb.setType(StunMessageType.REQUEST);
+    sbb.setType(StunMessageClass.REQUEST);
     for(int a=0; a<255; a++) {
       InetSocketAddress isa = new InetSocketAddress(InetAddress.getByAddress(new byte[] {
           (byte)a, 
@@ -361,7 +361,7 @@ public class StunTests {
       sbb.setXorMappedAddress(isa.getAddress().getAddress(), isa.getPort());
       StunPacket sp = sbb.build();
       StunPacket sp2 = new StunPacket(sp.getBytes());
-      assertEquals(sp.getMessageType(), sp2.getMessageType());
+      assertEquals(sp.getMessageClass(), sp2.getMessageClass());
       assertEquals(sp.getTxID(), sp2.getTxID());
       assertEquals(sp.getAddress(), sp2.getAddress());
       assertTrue(StunUtils.isStunPacket(sp.getBytes()));
@@ -372,7 +372,7 @@ public class StunTests {
   @Test
   public void stunFingerPrint() throws Exception {
     StunPacketBuilder sbb = new StunPacketBuilder();
-    sbb.setType(StunMessageType.REQUEST);
+    sbb.setType(StunMessageClass.REQUEST);
     byte[] keyba = new byte[32];
     ThreadLocalRandom.current().nextBytes(keyba);
     for(int a=0; a<255; a++) {
@@ -399,7 +399,7 @@ public class StunTests {
       StunPacket sp = sbb.enableFingerPrint().build();
       StunPacket sp2 = new StunPacket(sp.getBytes());
       assertTrue(StunUtils.verifyFingerPrint(sp));
-      assertEquals(sp.getMessageType(), sp2.getMessageType());
+      assertEquals(sp.getMessageClass(), sp2.getMessageClass());
       assertEquals(sp.getTxID(), sp2.getTxID());
       assertEquals(sp.getAddress(), sp2.getAddress());
       assertTrue(StunUtils.isStunPacket(sp.getBytes()));
@@ -423,7 +423,7 @@ public class StunTests {
     assertTrue(StunUtils.isStunPacket(sbb.build().getBytes()));
     assertFalse(StunUtils.isStunPacket(ByteBuffer.wrap(new byte[4])));
     ByteBuffer bb = ByteBuffer.wrap(new byte[8]);
-    bb.putShort((short)4);
+    bb.put((byte)(3<<6));
     bb.position(0);
     assertFalse(StunUtils.isStunPacket(bb));
     assertEquals(txID,sbb.build().getTxID());
